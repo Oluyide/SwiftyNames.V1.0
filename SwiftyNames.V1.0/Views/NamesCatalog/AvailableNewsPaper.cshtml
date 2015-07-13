@@ -1,0 +1,147 @@
+﻿@model SwiftyNames.V1._0.Models.NewsPaperModel
+@{
+    
+    ViewBag.Title = "AvailableNewsPaper";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div>
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            @TempData["Success"];
+        </div>
+    }
+</div>
+    <h3 class="col-lg-offset-1">Available News Paper</h3>
+    <div class="col-lg-12">
+        <div id="listbox" class="text-primary col-lg-offset-1" style="height:400px;">
+
+            <table class="table table-condensed text-justify text-uppercase style=" border:none">
+                <tr class="text-justify text-primary">
+                    <td>NEWS PAPERS</td>
+                    <td>PRICE</td>
+                </tr>
+            </table>
+            <hr />
+            <div>
+                @foreach (var item in Model.NewsPapers)
+                {
+                    var insertme = item.Selected ? "checked=\"checked\"" : @String.Empty;
+                    var forname = "for=\"group" + @item.Value + "\"";
+                    var idName = "id=\"group" + @item.Value + "\"";
+
+                    <ul class="list-unstyled">
+                        <li style="font-size:large">
+
+                            <label class="checkbox" @forname>
+                                <input id="checker" type="checkbox" name="groups" value="@item.Value"
+                                       @idName @insertme />
+                                @item.Text
+                            </label>
+                        </li>
+                    </ul>
+                }
+            </div>
+            <div class="col-lg-offset-8" style="margin-top:-15em">
+
+                @foreach (var item in Model.PriceList)
+                {
+                    var insertme = item.Selected ? "checked=\"checked\"" : @String.Empty;
+                    var forname = "for=\"group" + @item.Value + "\"";
+                    var idName = "id=\"group" + @item.Value + "\"";
+                    <ul class="list-unstyled">
+                        <li style="list-style: none; font-size:large">
+                            <label @forname>
+                                &#x20a6 @item.Text
+                            </label>
+                        </li>
+                    </ul>
+                }
+            </div>
+
+            <div class="text-success col-lg-offset-8" style="font-size:medium">Total Amount</div>
+            <div class="text-capitalize col-lg-offset-8" id="price" style="border:solid 1px;height:28px;width:275px;font-size:large"></div>
+
+            <input class="btn btn-success btn-block col-lg-offset-8" type="button" style="margin-top:5px" value="PROCEED TO PAYMENT" />
+            <div style="margin-top:-6.5em">
+                <label>Do you want it to be delivered to your address?</label>
+                <div class="checkbox">
+                    <label class="checkbox-label">YES</label><input type="checkbox" id="yes" value="500" data-toggl />
+                </div>
+
+                <div>
+                    <input type="checkbox" id="no" value="0" /><label class="checkbox-label">NO</label>
+                </div>
+            </div>
+
+            <br />
+            <div id="form">
+                @using (Ajax.BeginForm("AvailableNewsPaper", "NamesCatalog", new AjaxOptions { HttpMethod = "post" }))
+                {
+                    <div>
+                        @Html.LabelFor(x => x.phoneNumber, new { })
+                        @Html.TextBoxFor(x => x.phoneNumber, new { @class = "form-control" })
+
+                    </div>
+                    <div>
+                        @Html.LabelFor(x => x.Address, new { })
+                        @Html.TextAreaFor(x => x.Address, new { @class = "form-control" })
+                    </div>
+                    <div>
+                        <br />
+                        <input type="submit" value="Submit" class="btn btn-primary btn-block form-control" />
+                    </div>
+                }
+            </div>
+        </div>
+
+    </div>
+    <script>
+        $(document).ready(function () {
+            $("input:checkbox:checked").attr("checked", false);
+            $("form").hide();
+        });
+        jQuery("input[type=checkbox]").click(function () {
+            var totali = 0;
+            jQuery("input[type=checkbox]:checked").each(function () {
+
+
+                totali += parseFloat(jQuery(this).val());
+
+            });
+
+            jQuery('#price').html(totali + '&#x20a6');
+            //$("#yes").click(function () {
+            //    if (this.checked) {
+
+            //        totali += parseFloat(jQuery(this).val());
+            //        $('#no').prop('checked', false);
+            //        $("form").show();
+            //    }
+            //});
+
+            $("#no").click(function () {
+                if (this.checked) {
+                    totali += parseFloat(jQuery(this).val());
+                    $('#yes').prop('checked', false);
+                    $("form").hide();
+                }
+
+            });
+        });
+
+
+        $("#yes").click(function () {
+            if (this.checked) {
+                $('#no').prop('checked', false);
+                $("form").show();
+            }
+        });
+
+
+
+
+    </script>
+
